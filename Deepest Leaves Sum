@@ -1,1 +1,26 @@
+Given the root of a binary tree, return the sum of values of its deepest leaves.
 
+Input: root = [1,2,3,4,5,null,6,7,null,null,null,null,8]
+Output: 15
+https://assets.leetcode.com/uploads/2019/07/31/1483_ex1.png
+
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def deepestLeavesSum(self, root):
+        ans, hold, curr = 0 ,0, [root]
+        while len(curr) != 0:
+            clen, ans = len(curr), 0
+            for _ in range(clen):
+                hold = curr.pop(0)
+                ans += hold.val
+                if hold.right != None:
+                    curr.append(hold.right)
+                if hold.left != None:
+                    curr.append(hold.left)
+        return ans
