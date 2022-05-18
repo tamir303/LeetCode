@@ -1,60 +1,30 @@
 Given an n x n binary matrix grid, return the length of the shortest clear path in the matrix. If there is no clear path, return -1.
 
 class Solution(object):
-    def shortestPathBinaryMatrix(self, grid):
+    def shortestPathBinaryMatrix(self, grid) -> int:
         """
         :type grid: List[List[int]]
         :rtype: int
         """
-        x, y, size = 0, 0, len(grid) # nxn
+        x, y, size = 0, 0, len(grid)  # nxn
         if grid[0][0] == 0:
             queue = [((x, y), 1)]
             grid[0][0] = 2
         else:
             return -1
+        direction = [(0, 1), (1, 1), (-1, 1), (1, 0), (0, -1), (1, -1), (-1, -1), (-1, 0)]
+        checkValidDirection = lambda Ld, Lx, Ly, Lsize: 0 <= Ld[0] + Ly < Lsize and 0 <= Ld[1] + Lx < Lsize
+
         while queue:
             node = queue.pop(0)
             y, x, dis = node[0][0], node[0][1], node[1]
             if x == size - 1 and y == size - 1:
                 return dis
 
-            if x + 1 < size:
-                if grid[y][x + 1] == 0: # right
-                    grid[y][x + 1] = 2
-                    queue.append(((y, x + 1), dis+1))
+            for d in direction:
+                if checkValidDirection(d, x, y, size):  # can access
+                    if grid[y + d[0]][x + d[1]] == 0:  # not visited
+                        grid[y + d[0]][x + d[1]] = 2
+                        queue.append(((y + d[0], x + d[1]), dis + 1))
 
-            if x + 1 < size and y + 1 < size:
-                if grid[y + 1][x + 1] == 0: # right down diagonal
-                    grid[y + 1][x + 1] = 2
-                    queue.append(((y + 1, x + 1), dis+1))
-
-            if x + 1 < size and y - 1 >= 0:
-                if grid[y - 1][x + 1] == 0: # right up diagonal
-                    grid[y - 1][x + 1] = 2
-                    queue.append(((y - 1, x + 1), dis+1))
-
-            if y + 1 < size:
-                if grid[y + 1][x] == 0: # down
-                    grid[y + 1][x] = 2
-                    queue.append(((y + 1, x), dis+1))
-
-            if x - 1 >= 0:
-                if grid[y][x - 1] == 0:  # left
-                    grid[y][x - 1] = 2
-                    queue.append(((y, x - 1), dis+1))
-
-            if x - 1 >= 0 and y + 1 < size:
-                if grid[y + 1][x - 1] == 0:  # left down diagonal
-                    grid[y + 1][x - 1] = 2
-                    queue.append(((y + 1, x - 1), dis+1))
-
-            if x - 1 >= 0 and y - 1 >= 0:
-                if grid[y - 1][x - 1] == 0:  # left up diagonal
-                    grid[y - 1][x - 1] = 2
-                    queue.append(((y - 1, x - 1), dis+1))
-
-            if y - 1 >= 0:
-                if grid[y - 1][x] == 0:  # up
-                    grid[y - 1][x] = 2
-                    queue.append(((y - 1, x), dis+1))
         return -1
